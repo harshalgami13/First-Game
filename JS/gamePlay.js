@@ -1,7 +1,8 @@
 var coin
 var jumps
+var bombBlast
 var level = 1
-var score = 0 
+var score = 0
 class gamePlay extends Phaser.Scene {
 
     constructor(player = null, platforms = null, cursors = null, bombs = null, scoreText = null, levelText = null) {
@@ -17,6 +18,7 @@ class gamePlay extends Phaser.Scene {
     preload() {
         this.load.audio('coin', 'music/coin.mp3')
         this.load.audio('jump', 'music/jump.mp3')
+        this.load.audio('bombBlasta', 'music/blast.mp3')
 
         this.load.image('sky', 'assets/sky.png');
         this.load.image('key', 'assets/aswd.png');
@@ -28,6 +30,7 @@ class gamePlay extends Phaser.Scene {
     create() {
         coin = this.sound.add('coin')
         jumps = this.sound.add('jump')
+        bombBlast = this.sound.add('bombBlasta')
 
         this.add.image(400, 300, 'sky');
         this.add.image(720, 470, 'key').setScale(0.2);
@@ -133,22 +136,22 @@ class gamePlay extends Phaser.Scene {
 
     hitBomb(player, bomb) {
         this.physics.pause();
-
         this.player.setTint(0xff0000);
 
         this.player.anims.play('turn');
 
+        bombBlast.play()
         // gameOver = true;
         setTimeout(() => {
             game.scene.stop('gamePlay')
             game.scene.start('gameEnd')
-        }, 1000)
+        }, 3500)
     }
     collectStar(player, star) {
         star.disableBody(true, true);
         score += 10;
         coin.play()
-        this.scoreText.setText('Score: ' +score);
+        this.scoreText.setText('Score: ' + score);
 
         if (this.stars.countActive(true) === 0) {
             this.stars.children.iterate(function (child) {
